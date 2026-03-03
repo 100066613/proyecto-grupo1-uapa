@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISW306 - Grupo 01</title>
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+    <!-- Header y Navegación -->
+    <header class="header-principal">
+        <div class="logo">
+            <h1>Grupo 01</h1>
+            <span class="sub-logo">ISW306 - Desarrollo Web</span>
+        </div>
+        <nav class="nav-principal">
+            <input type="checkbox" id="check-menu">
+            <label for="check-menu" class="btn-hamburguesa">
+                <span></span>
+                <span></span>
+                <span></span>
+            </label>
+            <ul class="nav-list">
+                <li><a href="#modal-miembros">Miembros</a></li>
+                <li><a href="#modal-login" class="btn-nav">Iniciar Sesión</a></li>
+                <li><a href="#modal-registro" class="btn-nav btn-naranja">Registrarse</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenido del Dashboard -->
+    <main class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-info">
+                <h2>Desarrollo de Aplicaciones WEB (ISW306)</h2>
+                <p>Bienvenido al sistema de gestión académica del <strong>Grupo 1</strong>.</p>
+            </div>
+            <div class="materia-tag">FGC-208 / ISW306</div>
+        </header>
+
+        <section class="grid-stats">
+            <article class="stat-card">
+                <h3>Integrantes</h3>
+                <p class="numero">7</p>
+                <span class="tendencia">Equipo Completo</span>
+            </article>
+            <article class="stat-card">
+                <h3>Etapa Actual</h3>
+                <p class="numero">01</p>
+                <span class="tendencia positiva">Estructura y Estilo</span>
+            </article>
+            <article class="stat-card">
+                <h3>Tecnologías</h3>
+                <p class="numero">HTML/CSS</p>
+                <span class="tendencia">Estándar W3C</span>
+            </article>
+        </section>
+
+        <section class="seccion-actividad">
+            <article class="tabla-actividad">
+                <h3>Actividades</h3>
+                <div class="contenedor-wip">
+                    <img src="img/construc_2.gif" alt="Trabajo en Proceso" class="gif-wip">
+                    <p class="texto-wip">Actualizando contenidos académicos...</p>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- VENTANA MODAL: MIEMBROS DEL EQUIPO -->
+    <div id="modal-miembros" class="modal-overlay">
+        <div class="modal-contenido">
+            <a href="#" class="modal-cerrar">&times;</a>
+            <h2 class="titulo-modal">Miembros del Grupo 1</h2>
+            <div class="info-asignatura">
+                <p><strong>Asignatura:</strong> Desarrollo de Aplicaciones WEB (ISW306)</p>
+            </div>
+            <ul class="lista-miembros">
+                <li>Franklin Alberto Beltré Fernández</li>
+                <li>Juan De Jesús Germán Rodríguez</li>
+                <li>José Angel Graciano Hernández</li>
+                <li>Jossian Gutiérrez Rosario</li>
+                <li>Andy Andrés Rodríguez Abreu</li>
+                <li>Edwin José Tejada Núñez</li>
+                <li>Andry Zarzuela Mora</li>
+            </ul>
+            <div class="botones-modal">
+                <a href="#" class="btn-primario">Cerrar Lista</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL: LOGIN -->
+    <div id="modal-login" class="modal-overlay">
+        <div class="modal-contenido">
+            <a href="#" class="modal-cerrar">&times;</a>
+            <h2>Acceso al Sistema</h2>
+            <form action="#" class="form-modal">
+                <div class="campo">
+                    <label for="l-email">Correo Institucional</label>
+                    <input type="email" id="l-email" required placeholder="estudiante@uapa.edu.do">
+                </div>
+                <div class="campo">
+                    <label for="l-pass">Contraseña</label>
+                    <input type="password" id="l-pass" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-primario">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- VENTANA MODAL: REGISTRO -->
+    <div id="modal-registro" class="modal-overlay">
+        <div class="modal-contenido">
+            <a href="#" class="modal-cerrar">&times;</a>
+            <h2>Registro de Usuario</h2>
+            <p class="subtitulo">Complete los datos para el sistema ISW306</p>
+            <form action="#" class="form-modal">
+                <div class="campo">
+                    <label for="r-nombre">Nombre Completo</label>
+                    <input type="text" id="r-nombre" required placeholder="Ej: Franklin Beltré">
+                </div>
+                <div class="campo">
+                    <label for="r-email">Correo Electrónico</label>
+                    <input type="email" id="r-email" required placeholder="usuario@correo.com">
+                </div>
+                <div class="campo-fila">
+                    <div class="campo">
+                        <label for="r-pais">País</label>
+                        <select id="r-pais" required>
+                            <option value="">Seleccione...</option>
+                            <option value="RD">Rep. Dominicana</option>
+                            <option value="US">EE.UU.</option>
+                            <option value="ES">España</option>
+                        </select>
+                    </div>
+                    <div class="campo">
+                        <label for="r-tel">Teléfono</label>
+                        <input type="tel" id="r-tel" required placeholder="809-000-0000">
+                    </div>
+                </div>
+                <div class="campo">
+                    <label for="r-pass">Nueva Contraseña</label>
+                    <input type="password" id="r-pass" required placeholder="Mínimo 8 caracteres">
+                </div>
+                <div class="botones-modal">
+                    <button type="submit" class="btn-primario">Registrar Miembro</button>
+                    <button type="reset" class="btn-reset">Limpiar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer-simple">
+        <div class="footer-content">
+            <p>&copy; 2026 Grupo 1 - ISW306 Desarrollo de Aplicaciones WEB</p>
+            <p class="institucion">Universidad Abierta para Adultos (UAPA)</p>
+        </div>
+    </footer>
+</body>
+</html>
