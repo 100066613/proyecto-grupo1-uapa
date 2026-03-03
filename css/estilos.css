@@ -61,7 +61,32 @@ body {
     cursor: pointer;
     flex-direction: column;
     gap: 5px;
-    z-index: 600;
+    z-index: 1001;
+    position: relative;
+}
+
+/* Capa de fondo */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+}
+
+#check-menu:checked ~ .menu-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+.solo-movil {
+    display: none;
 }
 
 .btn-hamburguesa span {
@@ -247,7 +272,7 @@ body {
     100% { opacity: 0.6; }
 }
 
-/* MODAL SYSTEM (No JS) */
+/* Estilos para las ventanas modales */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -258,12 +283,12 @@ body {
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Cambiado de center a flex-start para permitir scroll */
+    align-items: flex-start;
     opacity: 0;
     visibility: hidden;
     transition: all 0.4s ease;
-    z-index: 1000;
-    overflow-y: auto; /* Permite scroll si el formulario es largo */
+    z-index: 2000;
+    overflow-y: auto;
     padding: 2rem 1rem;
 }
 
@@ -450,23 +475,33 @@ body {
         gap: 2rem;
         transition: right 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
+
+    .solo-movil {
+        display: block;
+        width: 100%;
+        text-align: right;
+        padding: 1rem 2rem;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    .btn-cerrar-menu {
+        font-size: 3rem;
+        color: var(--blanco);
+        cursor: pointer;
+        line-height: 1;
     }
 
     #check-menu:checked ~ .nav-list {
         right: 0;
     }
 
-    /* Animación del ícono hamburguesa */
-    #check-menu:checked + .btn-hamburguesa span:nth-child(1) {
-        transform: rotate(45deg) translate(5px, 6px);
-    }
-
-    #check-menu:checked + .btn-hamburguesa span:nth-child(2) {
+    #check-menu:checked + .btn-hamburguesa {
         opacity: 0;
-    }
-
-    #check-menu:checked + .btn-hamburguesa span:nth-child(3) {
-        transform: rotate(-45deg) translate(5px, -6px);
+        visibility: hidden;
     }
 
     .dashboard-header {
