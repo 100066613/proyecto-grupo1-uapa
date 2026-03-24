@@ -1,0 +1,425 @@
+/**
+ * Validaciones y Lógica del Lado Cliente
+ * Etapa 2: Dinamismo y Lógica en el Cliente
+ * ISW306 - Grupo 1
+ */
+
+// ============================================
+// UTILIDADES DE VALIDACIÓN
+// ============================================
+
+/**
+ * Valida formato de correo electrónico
+ * @param {string} email - Correo a validar
+ * @returns {boolean} True si el formato es válido
+ */
+const validarEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+};
+
+/**
+ * Valida formato de teléfono dominicano
+ * @param {string} tel - Teléfono a validar
+ * @returns {boolean} True si el formato es válido
+ */
+const validarTelefono = (tel) => {
+    const regex = /^[0-9]{3}-[0-9]{4}-[0-9]{4}$|^[0-9]{10}$/;
+    return regex.test(tel);
+};
+
+/**
+ * Valida longitud mínima de contraseña
+ * @param {string} pass - Contraseña a validar
+ * @param {number} min - Longitud mínima (por defecto 8)
+ * @returns {boolean} True si cumple la longitud mínima
+ */
+const validarLongitudMinima = (pass, min = 8) => {
+    return pass.length >= min;
+};
+
+/**
+ * Verifica si un campo está vacío
+ * @param {string} valor - Valor a validar
+ * @returns {boolean} True si está vacío o solo tiene espacios
+ */
+const estaVacio = (valor) => {
+    return !valor || valor.trim() === '';
+};
+
+// ============================================
+// MANIPULACIÓN DEL DOM - MENSAJES
+// ============================================
+
+/**
+ * Muestra un mensaje de error en un campo
+ * @param {HTMLElement} input - Elemento input
+ * @param {string} mensaje - Mensaje de error
+ */
+const mostrarError = (input, mensaje) => {
+    const contenedor = input.parentElement;
+    const mensajeError = contenedor.querySelector('.mensaje-error');
+
+    input.classList.add('input-error');
+    input.classList.remove('input-valido');
+
+    if (mensajeError) {
+        mensajeError.innerHTML = mensaje;
+        mensajeError.style.display = 'block';
+    }
+};
+
+/**
+ * Muestra que un campo es válido
+ * @param {HTMLElement} input - Elemento input
+ */
+const mostrarValido = (input) => {
+    const contenedor = input.parentElement;
+    const mensajeError = contenedor.querySelector('.mensaje-error');
+
+    input.classList.remove('input-error');
+    input.classList.add('input-valido');
+
+    if (mensajeError) {
+        mensajeError.style.display = 'none';
+    }
+};
+
+/**
+ * Muestra una notificación toast
+ * @param {string} mensaje - Mensaje a mostrar
+ * @param {string} tipo - 'exito' o 'error'
+ */
+const mostrarNotificacion = (mensaje, tipo = 'exito') => {
+    let notificacion = document.getElementById('notificacion-global');
+
+    if (!notificacion) {
+        notificacion = document.createElement('div');
+        notificacion.id = 'notificacion-global';
+        document.body.appendChild(notificacion);
+    }
+
+    notificacion.textContent = mensaje;
+    notificacion.className = `notificacion notificacion-${tipo}`;
+    notificacion.style.display = 'block';
+
+    setTimeout(() => {
+        notificacion.style.display = 'none';
+    }, 4000);
+};
+
+/**
+ * Limpia todos los mensajes de error de un formulario
+ * @param {HTMLFormElement} form - Formulario a limpiar
+ */
+const limpiarMensajesError = (form) => {
+    const inputs = form.querySelectorAll('input, select');
+    inputs.forEach(input => {
+        input.classList.remove('input-error', 'input-valido');
+    });
+
+    const mensajes = form.querySelectorAll('.mensaje-error');
+    mensajes.forEach(msg => {
+        msg.style.display = 'none';
+    });
+};
+
+// ============================================
+// PERSISTENCIA - LOCALSTORAGE
+// ============================================
+
+const CLAVE_USUARIOS = 'isw306_usuarios';
+
+/**
+ * Guarda un nuevo usuario en LocalStorage
+ * @param {Object} usuario - Objeto con datos del usuario
+ * @returns {boolean} True si se guardó correctamente
+ */
+const guardarUsuario = (usuario) => {
+    try {
+        const usuarios = obtenerUsuarios();
+
+        // Verificar si el email ya existe
+        if (usuarios.some(u => u.email === usuario.email)) {
+            return false;
+        }
+
+        usuarios.push(usuario);
+        localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
+        return true;
+    } catch (e) {
+        console.error('Error al guardar usuario:', e);
+        return false;
+    }
+};
+
+/**
+ * Obtiene todos los usuarios de LocalStorage
+ * @returns {Array} Lista de usuarios
+ */
+const obtenerUsuarios = () => {
+    try {
+        const data = localStorage.getItem(CLAVE_USUARIOS);
+        return data ? JSON.parse(data) : [];
+    } catch (e) {
+        console.error('Error al obtener usuarios:', e);
+        return [];
+    }
+};
+
+/**
+ * Autentica un usuario por email y contraseña
+ * @param {string} email - Correo del usuario
+ * @param {string} password - Contraseña del usuario
+ * @returns {Object|null} Usuario autenticado o null
+ */
+const autenticarUsuario = (email, password) => {
+    const usuarios = obtenerUsuarios();
+    return usuarios.find(u => u.email === email && u.password === password) || null;
+};
+
+// ============================================
+// FORMULARIO DE REGISTRO
+// ============================================
+
+const initFormRegistro = () => {
+    const form = document.querySelector('#modal-registro .form-modal');
+    if (!form) return;
+
+    const nombreInput = document.getElementById('r-nombre');
+    const emailInput = document.getElementById('r-email');
+    const paisInput = document.getElementById('r-pais');
+    const telInput = document.getElementById('r-tel');
+    const passInput = document.getElementById('r-pass');
+
+    // Validación en tiempo real - Nombre
+    nombreInput.addEventListener('blur', () => {
+        if (estaVacio(nombreInput.value)) {
+            mostrarError(nombreInput, 'El nombre es obligatorio');
+        } else if (nombreInput.value.trim().length < 3) {
+            mostrarError(nombreInput, 'El nombre debe tener al menos 3 caracteres');
+        } else {
+            mostrarValido(nombreInput);
+        }
+    });
+
+    // Validación en tiempo real - Email
+    emailInput.addEventListener('blur', () => {
+        if (estaVacio(emailInput.value)) {
+            mostrarError(emailInput, 'El correo es obligatorio');
+        } else if (!validarEmail(emailInput.value)) {
+            mostrarError(emailInput, 'Formato de correo inválido');
+        } else {
+            mostrarValido(emailInput);
+        }
+    });
+
+    // Validación en tiempo real - País
+    paisInput.addEventListener('change', () => {
+        if (estaVacio(paisInput.value)) {
+            mostrarError(paisInput, 'Debe seleccionar un país');
+        } else {
+            mostrarValido(paisInput);
+        }
+    });
+
+    // Validación en tiempo real - Teléfono
+    telInput.addEventListener('blur', () => {
+        if (estaVacio(telInput.value)) {
+            mostrarError(telInput, 'El teléfono es obligatorio');
+        } else if (!validarTelefono(telInput.value)) {
+            mostrarError(telInput, 'Formato: 809-000-0000 o 10 dígitos');
+        } else {
+            mostrarValido(telInput);
+        }
+    });
+
+    // Validación en tiempo real - Contraseña
+    passInput.addEventListener('blur', () => {
+        if (estaVacio(passInput.value)) {
+            mostrarError(passInput, 'La contraseña es obligatoria');
+        } else if (!validarLongitudMinima(passInput.value, 8)) {
+            mostrarError(passInput, 'Mínimo 8 caracteres requeridos');
+        } else {
+            mostrarValido(passInput);
+        }
+    });
+
+    // Submit del formulario
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        // Validar todos los campos
+        let valido = true;
+
+        if (estaVacio(nombreInput.value) || nombreInput.value.trim().length < 3) {
+            mostrarError(nombreInput, 'Nombre inválido');
+            valido = false;
+        }
+
+        if (estaVacio(emailInput.value) || !validarEmail(emailInput.value)) {
+            mostrarError(emailInput, 'Correo inválido');
+            valido = false;
+        }
+
+        if (estaVacio(paisInput.value)) {
+            mostrarError(paisInput, 'Seleccione un país');
+            valido = false;
+        }
+
+        if (estaVacio(telInput.value) || !validarTelefono(telInput.value)) {
+            mostrarError(telInput, 'Teléfono inválido');
+            valido = false;
+        }
+
+        if (estaVacio(passInput.value) || !validarLongitudMinima(passInput.value, 8)) {
+            mostrarError(passInput, 'Contraseña inválida');
+            valido = false;
+        }
+
+        if (!valido) {
+            mostrarNotificacion('Por favor, corrija los errores antes de continuar', 'error');
+            return;
+        }
+
+        // Guardar usuario
+        const nuevoUsuario = {
+            id: Date.now(),
+            nombre: nombreInput.value.trim(),
+            email: emailInput.value.trim(),
+            pais: paisInput.value,
+            telefono: telInput.value.trim(),
+            password: passInput.value,
+            fechaRegistro: new Date().toISOString()
+        };
+
+        if (guardarUsuario(nuevoUsuario)) {
+            mostrarNotificacion(`¡Bienvenido ${nuevoUsuario.nombre}! Registro exitoso.`, 'exito');
+            form.reset();
+            limpiarMensajesError(form);
+
+            // Cerrar modal después de 2 segundos
+            setTimeout(() => {
+                window.location.hash = '';
+            }, 2000);
+        } else {
+            mostrarNotificacion('El correo ya está registrado. Use otro o inicie sesión.', 'error');
+        }
+    });
+
+    // Botón limpiar
+    const btnReset = form.querySelector('button[type="reset"]');
+    if (btnReset) {
+        btnReset.addEventListener('click', () => {
+            limpiarMensajesError(form);
+        });
+    }
+};
+
+// ============================================
+// FORMULARIO DE LOGIN
+// ============================================
+
+const initFormLogin = () => {
+    const form = document.querySelector('#modal-login .form-modal');
+    if (!form) return;
+
+    const emailInput = document.getElementById('l-email');
+    const passInput = document.getElementById('l-pass');
+
+    // Poner foco en el email cuando se abre el modal
+    window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#modal-login') {
+            setTimeout(() => emailInput.focus(), 300);
+        }
+    });
+
+    // También verificar al cargar la página si ya está el modal abierto
+    if (window.location.hash === '#modal-login') {
+        setTimeout(() => emailInput.focus(), 300);
+    }
+
+    // Validación en tiempo real - Email
+    emailInput.addEventListener('blur', () => {
+        if (estaVacio(emailInput.value)) {
+            mostrarError(emailInput, 'El correo es obligatorio');
+        } else if (!validarEmail(emailInput.value)) {
+            mostrarError(emailInput, 'Formato de correo inválido');
+        } else {
+            mostrarValido(emailInput);
+        }
+    });
+
+    // Validación en tiempo real - Contraseña
+    passInput.addEventListener('blur', () => {
+        if (estaVacio(passInput.value)) {
+            mostrarError(passInput, 'La contraseña es obligatoria');
+        } else {
+            mostrarValido(passInput);
+        }
+    });
+
+    // Submit del formulario
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        let valido = true;
+
+        if (estaVacio(emailInput.value) || !validarEmail(emailInput.value)) {
+            mostrarError(emailInput, 'Correo inválido');
+            valido = false;
+        }
+
+        if (estaVacio(passInput.value)) {
+            mostrarError(passInput, 'Ingrese su contraseña');
+            valido = false;
+        }
+
+        if (!valido) {
+            mostrarNotificacion('Por favor, complete todos los campos correctamente', 'error');
+            return;
+        }
+
+        // Autenticar usuario
+        const usuario = autenticarUsuario(emailInput.value.trim(), passInput.value);
+
+        if (usuario) {
+            mostrarNotificacion(`¡Hola ${usuario.nombre}! Has iniciado sesión.`, 'exito');
+            form.reset();
+            limpiarMensajesError(form);
+
+            // Guardar sesión actual
+            localStorage.setItem('isw306_sesion_actual', JSON.stringify(usuario));
+
+            // Cerrar modal
+            setTimeout(() => {
+                window.location.hash = '';
+            }, 1500);
+        } else {
+            mostrarNotificacion('Credenciales incorrectas. Verifique o regístrese.', 'error');
+        }
+    });
+};
+
+// ============================================
+// INICIALIZACIÓN
+// ============================================
+
+document.addEventListener('DOMContentLoaded', () => {
+    initFormLogin();
+    initFormRegistro();
+
+    // Cerrar notificaciones al hacer clic
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('notificacion')) {
+            e.target.style.display = 'none';
+        }
+    });
+
+    // Verificar si hay sesión activa
+    const sesionActual = localStorage.getItem('isw306_sesion_actual');
+    if (sesionActual) {
+        const usuario = JSON.parse(sesionActual);
+        console.log('Sesión activa:', usuario.nombre);
+    }
+});
