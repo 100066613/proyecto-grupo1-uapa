@@ -2,7 +2,7 @@
 
 Proyecto del Grupo 1 - Asignatura Desarrollo Aplicaciones WEB ISW-306
 
-## Integrantes:
+## Integrantes
 
 - **Franklin Alberto Beltré Fernández** - Líder
 - Juan De Jesús Germán Rodríguez
@@ -14,55 +14,121 @@ Proyecto del Grupo 1 - Asignatura Desarrollo Aplicaciones WEB ISW-306
 
 ---
 
+## Etapa 1: Maquetación
+
+Estructura HTML y estilos CSS del sitio. Incluye navegación responsive, tarjetas de estadísticas, modales y formularios base.
+
+---
+
 ## Etapa 2: Dinamismo y Lógica en el Cliente
 
-### Descripción
+Se añadió JavaScript del lado cliente para validaciones en tiempo real y persistencia temporal con LocalStorage.
 
-Se ha implementado JavaScript del lado cliente para añadir interactividad, validaciones en tiempo real y persistencia de datos mediante LocalStorage.
+### Funcionalidades
 
-### Funcionalidades Implementadas
+- Validación de campos al salir del foco (blur): vacíos, formato de correo, longitud de contraseña, teléfono dominicano
+- Manipulación del DOM: mensajes de error inline, clases CSS de estado, notificaciones tipo toast
+- Registro y autenticación de usuarios guardados en LocalStorage
 
-#### 1. Validaciones en Tiempo Real
+---
 
-- **Campos vacíos**: Detecta cuando un campo está vacío al salir del foco (evento blur)
-- **Formato de correo**: Valida que el email tenga un formato válido usando expresiones regulares
-- **Longitud mínima**: Verifica que las contraseñas tengan al menos 8 caracteres
-- **Formato de teléfono**: Valida teléfonos en formato dominicano (809-000-0000 o 10 dígitos)
+## Etapa 3: Arquitectura de Servidor y Persistencia
 
-#### 2. Manipulación del DOM
+Se reemplazó la capa de LocalStorage por una conexión real a base de datos. La lógica de validación del cliente se mantuvo intacta; únicamente cambió la capa de datos.
 
-- **getElementById()**: Obtiene referencias a elementos del formulario
-- **querySelector()**: Selecciona elementos específicos del DOM
-- **innerHTML**: Inserta mensajes de error dinámicamente
-- **classList**: Añade o quita clases de validación visual (input-error, input-valido)
-- **Mensajes sin recargar**: Todas las validaciones y notificaciones se muestran sin recargar la página
+### Tecnologías utilizadas
 
-#### 3. Persistencia de Datos (LocalStorage)
+- **Node.js** con Express como servidor HTTP
+- **MariaDB** como motor de base de datos relacional
+- **mysql2** para la conexión desde Node.js
+- **express-session** para manejo de sesiones en servidor
 
-- **Registro de usuarios**: Los usuarios registrados se guardan en el navegador
-- **Autenticación**: El formulario de login valida contra los datos almacenados
-- **Sesión activa**: Mantiene la sesión del usuario actual
-
-### Estructura de Archivos
+### Estructura del proyecto
 
 ```
 pagina/
-├── index.html          # Estructura HTML con formularios
+├── index.html               # Estructura HTML (Etapa 1)
 ├── css/
-│   └── estilos.css     # Estilos incluyendo clases de validación
+│   └── estilos.css          # Estilos del sitio
 ├── js/
-│   └── validaciones.js # Lógica JavaScript (Etapa 2)
-└── img/                # Imágenes del proyecto
+│   └── validaciones.js      # Validaciones cliente + llamadas al servidor
+├── img/
+│   └── construc_2.gif
+└── backend/
+    ├── server.js            # Servidor Express (puerto 3000)
+    ├── db.js                # Conexión al pool de MariaDB
+    ├── package.json
+    ├── routes/
+    │   └── usuarios.js      # Rutas de la API
+    └── db/
+        └── schema.sql       # Script de creación de la base de datos
 ```
 
-### Uso
+### Base de datos
 
-1. **Abrir la página**: Cargar `index.html` en un navegador web
-2. **Registrarse**: Click en "Registrarse", completar el formulario
-3. **Validaciones**: Los errores se muestran en tiempo real al salir de cada campo
-4. **Iniciar sesión**: Usar las credenciales registradas para acceder
+La base de datos se llama `isw306_grupo1` y contiene la tabla `usuarios`:
+
+```sql
+CREATE TABLE IF NOT EXISTS usuarios (
+    id             INT AUTO_INCREMENT PRIMARY KEY,
+    nombre         VARCHAR(100)  NOT NULL,
+    email          VARCHAR(150)  NOT NULL UNIQUE,
+    pais           VARCHAR(5)    NOT NULL,
+    telefono       VARCHAR(20)   NOT NULL,
+    password       VARCHAR(255)  NOT NULL,
+    fecha_registro DATETIME      DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### Endpoints de la API
+
+| Método | Ruta              | Operación SQL        | Descripción                        |
+|--------|-------------------|----------------------|------------------------------------|
+| POST   | /api/registrar    | INSERT INTO usuarios | Crea un nuevo usuario              |
+| POST   | /api/login        | SELECT con WHERE     | Autentica al usuario               |
+| GET    | /api/sesion       | —                    | Consulta si hay sesion activa      |
+| POST   | /api/logout       | —                    | Cierra la sesion                   |
+| GET    | /api/usuarios     | SELECT todos         | Lista usuarios para el dashboard   |
+
+Las consultas usan parámetros preparados (`?`) para evitar inyección SQL.
+
+### Cómo ejecutar el proyecto
+
+**Requisitos:** Node.js instalado, MariaDB o MySQL corriendo en el puerto 3306.
+
+1. Crear la base de datos ejecutando el script incluido:
+
+```bash
+mysql -u root -p < backend/db/schema.sql
+```
+
+2. Instalar las dependencias del servidor:
+
+```bash
+cd backend
+npm install
+```
+
+3. Iniciar el servidor:
+
+```bash
+node server.js
+```
+
+4. Abrir `index.html` en el navegador.
+
+El servidor queda disponible en `http://localhost:3000` y el frontend se conecta automáticamente a esa dirección.
+
+### Flujo de uso
+
+1. Abrir `index.html` en el navegador
+2. Hacer clic en "Registrarse" y completar el formulario
+3. Los datos se envían al servidor mediante `POST /api/registrar` y se guardan en MariaDB
+4. Al iniciar sesión, el servidor verifica las credenciales con `SELECT` y crea una sesión
+5. La tabla del dashboard muestra los usuarios registrados consultando `GET /api/usuarios`
 
 ### Compatibilidad
 
-- Navegadores modernos con soporte de LocalStorage
-- JavaScript ES6+
+- Navegadores modernos con soporte de Fetch API
+- Node.js 18 o superior
+- MariaDB 10.6 o superior / MySQL 8 o superior
