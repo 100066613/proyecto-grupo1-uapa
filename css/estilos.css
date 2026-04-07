@@ -627,3 +627,39 @@ body {
         top: 80px;
     }
 }
+
+/* Tabla de datos - Etapa 3 */
+.tabla-datos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.tabla-datos thead {
+    background-color: var(--azul-grupo1);
+    color: #fff;
+}
+
+.tabla-datos th,
+.tabla-datos td {
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tabla-datos tbody tr:hover {
+    background-color: #f0f4ff;
+}
+
+.tabla-datos tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+@media (max-width: 768px) {
+    .tabla-datos {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

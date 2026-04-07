@@ -1,8 +1,10 @@
 /**
  * Validaciones y Lógica del Lado Cliente
- * Etapa 2: Dinamismo y Lógica en el Cliente
+ * Etapa 3: Arquitectura de Servidor y Persistencia
  * ISW306 - Grupo 1
  */
+
+const API_BASE = 'http://localhost:3000/api';
 
 // ============================================
 // UTILIDADES DE VALIDACIÓN
@@ -125,57 +127,83 @@ const limpiarMensajesError = (form) => {
 };
 
 // ============================================
-// PERSISTENCIA - LOCALSTORAGE
+// PERSISTENCIA - SERVIDOR (Node.js + MySQL)
 // ============================================
 
-const CLAVE_USUARIOS = 'isw306_usuarios';
-
 /**
- * Guarda un nuevo usuario en LocalStorage
- * @param {Object} usuario - Objeto con datos del usuario
- * @returns {boolean} True si se guardó correctamente
+ * Registra un nuevo usuario en el servidor
+ * @param {Object} usuario - Datos del usuario a registrar
+ * @returns {Promise<{ok: boolean, mensaje: string}>}
  */
-const guardarUsuario = (usuario) => {
-    try {
-        const usuarios = obtenerUsuarios();
-
-        // Verificar si el email ya existe
-        if (usuarios.some(u => u.email === usuario.email)) {
-            return false;
-        }
-
-        usuarios.push(usuario);
-        localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
-        return true;
-    } catch (e) {
-        console.error('Error al guardar usuario:', e);
-        return false;
-    }
+const guardarUsuario = async (usuario) => {
+    const respuesta = await fetch(API_BASE + '/registrar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(usuario)
+    });
+    return respuesta.json();
 };
 
 /**
- * Obtiene todos los usuarios de LocalStorage
- * @returns {Array} Lista de usuarios
- */
-const obtenerUsuarios = () => {
-    try {
-        const data = localStorage.getItem(CLAVE_USUARIOS);
-        return data ? JSON.parse(data) : [];
-    } catch (e) {
-        console.error('Error al obtener usuarios:', e);
-        return [];
-    }
-};
-
-/**
- * Autentica un usuario por email y contraseña
+ * Autentica un usuario contra la base de datos
  * @param {string} email - Correo del usuario
  * @param {string} password - Contraseña del usuario
- * @returns {Object|null} Usuario autenticado o null
+ * @returns {Promise<{ok: boolean, usuario?: Object, mensaje?: string}>}
  */
-const autenticarUsuario = (email, password) => {
-    const usuarios = obtenerUsuarios();
-    return usuarios.find(u => u.email === email && u.password === password) || null;
+const autenticarUsuario = async (email, password) => {
+    const respuesta = await fetch(API_BASE + '/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ email, password })
+    });
+    return respuesta.json();
+};
+
+/**
+ * Carga la lista de usuarios registrados y la muestra en el dashboard
+ */
+const cargarListaUsuarios = async () => {
+    const contenedor = document.getElementById('tabla-usuarios');
+    if (!contenedor) return;
+
+    try {
+        const respuesta = await fetch(API_BASE + '/usuarios', { credentials: 'include' });
+        const datos = await respuesta.json();
+
+        if (!datos.ok || datos.usuarios.length === 0) {
+            contenedor.innerHTML = '<p class="texto-wip">No hay usuarios registrados aun.</p>';
+            return;
+        }
+
+        const filas = datos.usuarios.map(u => `
+            <tr>
+                <td>${u.id}</td>
+                <td>${u.nombre}</td>
+                <td>${u.email}</td>
+                <td>${u.pais}</td>
+                <td>${u.telefono}</td>
+                <td>${new Date(u.fecha_registro).toLocaleDateString('es-DO')}</td>
+            </tr>`).join('');
+
+        contenedor.innerHTML = `
+            <table class="tabla-datos">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Pais</th>
+                        <th>Telefono</th>
+                        <th>Registro</th>
+                    </tr>
+                </thead>
+                <tbody>${filas}</tbody>
+            </table>`;
+    } catch (e) {
+        contenedor.innerHTML = '<p class="texto-wip">No se pudo conectar al servidor.</p>';
+    }
 };
 
 // ============================================
@@ -246,7 +274,7 @@ const initFormRegistro = () => {
     });
 
     // Submit del formulario
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         // Validar todos los campos
@@ -282,28 +310,27 @@ const initFormRegistro = () => {
             return;
         }
 
-        // Guardar usuario
         const nuevoUsuario = {
-            id: Date.now(),
-            nombre: nombreInput.value.trim(),
-            email: emailInput.value.trim(),
-            pais: paisInput.value,
+            nombre:   nombreInput.value.trim(),
+            email:    emailInput.value.trim(),
+            pais:     paisInput.value,
             telefono: telInput.value.trim(),
-            password: passInput.value,
-            fechaRegistro: new Date().toISOString()
+            password: passInput.value
         };
 
-        if (guardarUsuario(nuevoUsuario)) {
-            mostrarNotificacion(`¡Bienvenido ${nuevoUsuario.nombre}! Registro exitoso.`, 'exito');
-            form.reset();
-            limpiarMensajesError(form);
-
-            // Cerrar modal después de 2 segundos
-            setTimeout(() => {
-                window.location.hash = '';
-            }, 2000);
-        } else {
-            mostrarNotificacion('El correo ya está registrado. Use otro o inicie sesión.', 'error');
+        try {
+            const resultado = await guardarUsuario(nuevoUsuario);
+            if (resultado.ok) {
+                mostrarNotificacion(`¡Bienvenido ${nuevoUsuario.nombre}! Registro exitoso.`, 'exito');
+                form.reset();
+                limpiarMensajesError(form);
+                cargarListaUsuarios();
+                setTimeout(() => { window.location.hash = ''; }, 2000);
+            } else {
+                mostrarNotificacion(resultado.mensaje || 'El correo ya está registrado. Use otro o inicie sesión.', 'error');
+            }
+        } catch (err) {
+            mostrarNotificacion('No se pudo conectar al servidor. Verifique que esté activo.', 'error');
         }
     });
 
@@ -360,7 +387,7 @@ const initFormLogin = () => {
     });
 
     // Submit del formulario
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         let valido = true;
@@ -380,23 +407,19 @@ const initFormLogin = () => {
             return;
         }
 
-        // Autenticar usuario
-        const usuario = autenticarUsuario(emailInput.value.trim(), passInput.value);
+        try {
+            const resultado = await autenticarUsuario(emailInput.value.trim(), passInput.value);
 
-        if (usuario) {
-            mostrarNotificacion(`¡Hola ${usuario.nombre}! Has iniciado sesión.`, 'exito');
-            form.reset();
-            limpiarMensajesError(form);
-
-            // Guardar sesión actual
-            localStorage.setItem('isw306_sesion_actual', JSON.stringify(usuario));
-
-            // Cerrar modal
-            setTimeout(() => {
-                window.location.hash = '';
-            }, 1500);
-        } else {
-            mostrarNotificacion('Credenciales incorrectas. Verifique o regístrese.', 'error');
+            if (resultado.ok) {
+                mostrarNotificacion(`¡Hola ${resultado.usuario.nombre}! Has iniciado sesión.`, 'exito');
+                form.reset();
+                limpiarMensajesError(form);
+                setTimeout(() => { window.location.hash = ''; }, 1500);
+            } else {
+                mostrarNotificacion('Credenciales incorrectas. Verifique o regístrese.', 'error');
+            }
+        } catch (err) {
+            mostrarNotificacion('No se pudo conectar al servidor. Verifique que esté activo.', 'error');
         }
     });
 };
@@ -416,10 +439,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Verificar si hay sesión activa
-    const sesionActual = localStorage.getItem('isw306_sesion_actual');
-    if (sesionActual) {
-        const usuario = JSON.parse(sesionActual);
-        console.log('Sesión activa:', usuario.nombre);
-    }
+    // Cargar lista de usuarios registrados en el dashboard
+    cargarListaUsuarios();
+
+    // Verificar si hay sesion activa en el servidor
+    fetch(API_BASE + '/sesion', { credentials: 'include' })
+        .then(r => r.json())
+        .then(datos => {
+            if (datos.sesion) {
+                console.log('Sesion activa:', datos.usuario.nombre);
+            }
+        })
+        .catch(() => {});
 });
