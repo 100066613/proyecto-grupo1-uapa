@@ -1,13 +1,9 @@
-/**
- * Lógica del cliente - ISW306 Grupo 1
- * Etapa 4: CRUD completo + autenticación con sesiones
- */
+// Lógica del cliente - ISW306 Grupo 1
+// Etapa 4: CRUD completo + sesiones
 
 const API = '/api';
 
-// ============================================
-// ESTADO DE SESIÓN
-// ============================================
+// --- Estado de sesión ---
 
 let sesionActiva = false;
 let usuarioActual = null;
@@ -44,9 +40,7 @@ const actualizarUI = (usuario) => {
     cargarTablaUsuarios();
 };
 
-// ============================================
-// NOTIFICACIONES (Bootstrap Toast)
-// ============================================
+// --- Notificaciones (Bootstrap Toast) ---
 
 const mostrarToast = (mensaje, tipo = 'exito') => {
     const toastEl  = document.getElementById('toast-notificacion');
@@ -56,9 +50,7 @@ const mostrarToast = (mensaje, tipo = 'exito') => {
     bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 4000 }).show();
 };
 
-// ============================================
-// VALIDACIONES
-// ============================================
+// --- Validaciones ---
 
 const validarEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -83,9 +75,7 @@ const limpiarValidacion = (form) => {
     });
 };
 
-// ============================================
-// TABLA DE USUARIOS (READ)
-// ============================================
+// --- Tabla de usuarios ---
 
 const cargarTablaUsuarios = async () => {
     const contenedor = document.getElementById('tabla-usuarios');
@@ -144,9 +134,7 @@ const cargarTablaUsuarios = async () => {
 
 const escapar = (str) => String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
 
-// ============================================
-// EDITAR USUARIO (UPDATE)
-// ============================================
+// --- Editar usuario ---
 
 const abrirEditar = (id, nombre, email, pais, telefono) => {
     document.getElementById('e-id').value     = id;
@@ -206,9 +194,7 @@ const initFormEditar = () => {
     });
 };
 
-// ============================================
-// ELIMINAR USUARIO (DELETE)
-// ============================================
+// --- Eliminar usuario ---
 
 const abrirEliminar = (id, nombre) => {
     idParaEliminar = id;
@@ -244,9 +230,7 @@ const initEliminar = () => {
     });
 };
 
-// ============================================
-// LOGIN
-// ============================================
+// --- Login ---
 
 const initFormLogin = () => {
     const form  = document.getElementById('form-login');
@@ -288,9 +272,7 @@ const initFormLogin = () => {
     });
 };
 
-// ============================================
-// LOGOUT
-// ============================================
+// --- Logout ---
 
 const initLogout = () => {
     const btn = document.getElementById('btn-logout');
@@ -305,9 +287,7 @@ const initLogout = () => {
     });
 };
 
-// ============================================
-// REGISTRO
-// ============================================
+// --- Registro ---
 
 const initFormRegistro = () => {
     const form = document.getElementById('form-registro');
@@ -364,9 +344,7 @@ const initFormRegistro = () => {
     form.querySelector('button[type="reset"]').addEventListener('click', () => limpiarValidacion(form));
 };
 
-// ============================================
-// INICIALIZACIÓN
-// ============================================
+// --- Inicio ---
 
 document.addEventListener('DOMContentLoaded', async () => {
     initFormLogin();
