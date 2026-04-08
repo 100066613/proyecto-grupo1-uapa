@@ -4,168 +4,338 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ISW306 - Grupo 01</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Estilos personalizados del Grupo 1 -->
     <link rel="stylesheet" href="css/estilos.css">
 </head>
 <body>
-    <!-- Header y Navegación -->
-    <header class="header-principal">
-        <div class="logo">
-            <h1>Grupo 01</h1>
-            <span class="sub-logo">ISW306 - Desarrollo Web</span>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-grupo1 sticky-top shadow">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand" href="#">
+                <span class="fw-bold text-naranja">Grupo 01</span>
+                <small class="d-block text-muted-light" style="font-size:0.65rem;line-height:1">ISW306 - Desarrollo Web</small>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modalMiembros">
+                            <i class="bi bi-people"></i> Miembros
+                        </a>
+                    </li>
+                    <!-- Estado: No autenticado -->
+                    <li class="nav-item" id="nav-login-btn">
+                        <a class="btn btn-outline-light btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#modalLogin">
+                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                        </a>
+                    </li>
+                    <li class="nav-item" id="nav-registro-btn">
+                        <a class="btn btn-naranja btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#modalRegistro">
+                            <i class="bi bi-person-plus"></i> Registrarse
+                        </a>
+                    </li>
+                    <!-- Estado: Autenticado (oculto por defecto) -->
+                    <li class="nav-item d-none" id="nav-usuario-info">
+                        <span class="nav-link text-light">
+                            <i class="bi bi-person-check text-naranja"></i>
+                            <span id="nav-nombre-usuario"></span>
+                        </span>
+                    </li>
+                    <li class="nav-item d-none" id="nav-logout-btn">
+                        <button class="btn btn-outline-warning btn-sm" id="btn-logout">
+                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <nav class="nav-principal">
-            <input type="checkbox" id="check-menu">
-            <label for="check-menu" class="btn-hamburguesa">
-                <span></span>
-                <span></span>
-                <span></span>
-            </label>
-            <label for="check-menu" class="menu-overlay"></label>
-            <ul class="nav-list">
-                <li class="solo-movil"><label for="check-menu" class="btn-cerrar-menu">&times;</label></li>
-                <li><a href="#modal-miembros">Miembros</a></li>
-                <li><a href="#modal-login" class="btn-nav">Iniciar Sesión</a></li>
-                <li><a href="#modal-registro" class="btn-nav btn-naranja">Registrarse</a></li>
-            </ul>
-        </nav>
+    </nav>
     </header>
 
-    <!-- Contenido del Dashboard -->
-    <main class="dashboard-container">
-        <header class="dashboard-header">
-            <div class="header-info">
-                <h2>Desarrollo de Aplicaciones WEB (ISW306)</h2>
-                <p>Bienvenido al sistema de gestión académica del <strong>Grupo 1</strong>.</p>
+    <!-- ==================== MAIN / DASHBOARD ==================== -->
+    <main class="container-fluid py-4 px-4">
+
+        <!-- Cabecera del dashboard -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Desarrollo de Aplicaciones WEB <small class="text-muted fs-6">(ISW306)</small></h2>
+                <p class="text-muted mb-0">Bienvenido al sistema de gestión académica del <strong>Grupo 1</strong>.</p>
             </div>
-            <div class="materia-tag">FGC-208 / ISW306</div>
-        </header>
+            <span class="badge bg-naranja text-white fs-6 mt-2 mt-md-0">FGC-208 / ISW306</span>
+        </div>
 
-        <section class="grid-stats">
-            <article class="stat-card">
-                <h3>Integrantes</h3>
-                <p class="numero">7</p>
-                <span class="tendencia">Equipo Completo</span>
-            </article>
-            <article class="stat-card">
-                <h3>Etapa Actual</h3>
-                <p class="numero">03</p>
-                <span class="tendencia positiva">Backend y BD</span>
-            </article>
-            <article class="stat-card">
-                <h3>Tecnologías</h3>
-                <p class="numero">Node.js + MySQL</p>
-                <span class="tendencia">Express + MariaDB</span>
-            </article>
-        </section>
-
-        <section class="seccion-actividad">
-            <article class="tabla-actividad">
-                <h3>Usuarios Registrados</h3>
-                <div id="tabla-usuarios">
-                    <p class="texto-wip">Cargando datos del servidor...</p>
+        <!-- Tarjetas de estadísticas -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body py-4">
+                        <i class="bi bi-people-fill fs-1 text-naranja"></i>
+                        <h5 class="card-title mt-2 mb-0">Integrantes</h5>
+                        <p class="display-6 fw-bold mb-0">7</p>
+                        <small class="text-muted">Equipo Completo</small>
+                    </div>
                 </div>
-            </article>
-        </section>
+            </div>
+            <div class="col-sm-4">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body py-4">
+                        <i class="bi bi-flag-fill fs-1 text-naranja"></i>
+                        <h5 class="card-title mt-2 mb-0">Etapa Actual</h5>
+                        <p class="display-6 fw-bold mb-0">04</p>
+                        <small class="text-success fw-semibold">Cierre del Proyecto</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card border-0 shadow-sm text-center h-100">
+                    <div class="card-body py-4">
+                        <i class="bi bi-stack fs-1 text-naranja"></i>
+                        <h5 class="card-title mt-2 mb-0">Tecnologías</h5>
+                        <p class="fw-bold mb-0 mt-2">Node.js + MySQL</p>
+                        <small class="text-muted">Express · Bootstrap 5</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alerta de sesión requerida -->
+        <div id="alerta-sesion" class="alert alert-warning d-flex align-items-center gap-2 d-none mb-3" role="alert">
+            <i class="bi bi-lock-fill fs-5"></i>
+            <div>Inicia sesión para poder <strong>editar</strong> o <strong>eliminar</strong> usuarios.</div>
+        </div>
+
+        <!-- Tabla de usuarios registrados -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-grupo1 text-white d-flex align-items-center justify-content-between">
+                <span><i class="bi bi-table me-2"></i>Usuarios Registrados</span>
+                <span class="badge bg-light text-dark" id="contador-usuarios">0</span>
+            </div>
+            <div class="card-body p-0">
+                <div id="tabla-usuarios" class="p-3 text-muted">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="spinner-border spinner-border-sm text-naranja" role="status"></div>
+                        Cargando datos del servidor...
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <!-- VENTANA MODAL: MIEMBROS DEL EQUIPO -->
-    <div id="modal-miembros" class="modal-overlay">
-        <div class="modal-contenido">
-            <a href="#" class="modal-cerrar">&times;</a>
-            <h2 class="titulo-modal">Miembros del Grupo 1</h2>
-            <div class="info-asignatura">
-                <p><strong>Asignatura:</strong> Desarrollo de Aplicaciones WEB (ISW306)</p>
-            </div>
-            <ul class="lista-miembros">
-                <li>Franklin Alberto Beltré Fernández</li>
-                <li>Juan De Jesús Germán Rodríguez</li>
-                <li>José Angel Graciano Hernández</li>
-                <li>Jossian Gutiérrez Rosario</li>
-                <li>Andy Andrés Rodríguez Abreu</li>
-                <li>Edwin José Tejada Núñez</li>
-                <li>Andry Zarzuela Mora</li>
-            </ul>
-            <div class="botones-modal">
-                <a href="#" class="btn-primario">Cerrar Lista</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- VENTANA MODAL: LOGIN -->
-    <div id="modal-login" class="modal-overlay">
-        <div class="modal-contenido">
-            <a href="#" class="modal-cerrar">&times;</a>
-            <h2>Acceso al Sistema</h2>
-            <form action="#" class="form-modal">
-                <div class="campo">
-                    <label for="l-email">Correo Institucional</label>
-                    <input type="email" id="l-email" required placeholder="estudiante@uapa.edu.do">
-                    <span class="mensaje-error"></span>
-                </div>
-                <div class="campo">
-                    <label for="l-pass">Contraseña</label>
-                    <input type="password" id="l-pass" required placeholder="••••••••">
-                    <span class="mensaje-error"></span>
-                </div>
-                <button type="submit" class="btn-primario">Entrar</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- VENTANA MODAL: REGISTRO -->
-    <div id="modal-registro" class="modal-overlay">
-        <div class="modal-contenido">
-            <a href="#" class="modal-cerrar">&times;</a>
-            <h2>Registro de Usuario</h2>
-            <p class="subtitulo">Complete los datos para el sistema ISW306</p>
-            <form action="#" class="form-modal">
-                <div class="campo">
-                    <label for="r-nombre">Nombre Completo</label>
-                    <input type="text" id="r-nombre" required placeholder="Ej: Franklin Beltré">
-                    <span class="mensaje-error"></span>
-                </div>
-                <div class="campo">
-                    <label for="r-email">Correo Electrónico</label>
-                    <input type="email" id="r-email" required placeholder="usuario@correo.com">
-                    <span class="mensaje-error"></span>
-                </div>
-                <div class="campo-fila">
-                    <div class="campo">
-                        <label for="r-pais">País</label>
-                        <select id="r-pais" required>
-                            <option value="">Seleccione...</option>
-                            <option value="RD">Rep. Dominicana</option>
-                            <option value="US">EE.UU.</option>
-                            <option value="ES">España</option>
-                        </select>
-                        <span class="mensaje-error"></span>
-                    </div>
-                    <div class="campo">
-                        <label for="r-tel">Teléfono</label>
-                        <input type="tel" id="r-tel" required placeholder="809-000-0000">
-                        <span class="mensaje-error"></span>
-                    </div>
-                </div>
-                <div class="campo">
-                    <label for="r-pass">Nueva Contraseña</label>
-                    <input type="password" id="r-pass" required placeholder="Mínimo 8 caracteres">
-                    <span class="mensaje-error"></span>
-                </div>
-                <div class="botones-modal">
-                    <button type="submit" class="btn-primario">Registrar Miembro</button>
-                    <button type="reset" class="btn-reset">Limpiar</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <footer class="footer-simple">
-        <div class="footer-content">
-            <p>&copy; 2026 Grupo 1 - ISW306 Desarrollo de Aplicaciones WEB</p>
-            <p class="institucion">Universidad Abierta para Adultos (UAPA)</p>
-        </div>
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-grupo1 text-white text-center py-3 mt-auto">
+        <small>&copy; 2026 Grupo 1 &mdash; ISW306 Desarrollo de Aplicaciones WEB</small><br>
+        <small class="text-muted-light">Universidad Abierta para Adultos (UAPA)</small>
     </footer>
 
+
+    <!-- ==================== MODAL: MIEMBROS ==================== -->
+    <div class="modal fade" id="modalMiembros" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-grupo1 text-white">
+                    <h5 class="modal-title"><i class="bi bi-people me-2"></i>Miembros del Grupo 1</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3"><strong>Asignatura:</strong> Desarrollo de Aplicaciones WEB (ISW306)</p>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-naranja"></i>Franklin Alberto Beltré Fernández</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-naranja"></i>Juan De Jesús Germán Rodríguez</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-naranja"></i>José Angel Graciano Hernández</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-naranja"></i>Jossian Gutiérrez Rosario</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-naranja"></i>Andy Andrés Rodríguez Abreu</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-naranja"></i>Edwin José Tejada Núñez</li>
+                        <li class="list-group-item"><i class="bi bi-person me-2 text-naranja"></i>Andry Zarzuela Mora</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: LOGIN ==================== -->
+    <div class="modal fade" id="modalLogin" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-grupo1 text-white">
+                    <h5 class="modal-title"><i class="bi bi-box-arrow-in-right me-2"></i>Acceso al Sistema</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-login" novalidate>
+                        <div class="mb-3">
+                            <label for="l-email" class="form-label">Correo Institucional</label>
+                            <input type="email" class="form-control" id="l-email" placeholder="estudiante@uapa.edu.do" required>
+                            <div class="invalid-feedback">Ingrese un correo válido.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="l-pass" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="l-pass" placeholder="••••••••" required>
+                            <div class="invalid-feedback">La contraseña es obligatoria.</div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-grupo1">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Entrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: REGISTRO ==================== -->
+    <div class="modal fade" id="modalRegistro" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-grupo1 text-white">
+                    <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>Registro de Usuario</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted small mb-3">Complete los datos para el sistema ISW306</p>
+                    <form id="form-registro" novalidate>
+                        <div class="mb-3">
+                            <label for="r-nombre" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="r-nombre" placeholder="Ej: Franklin Beltré" required minlength="3">
+                            <div class="invalid-feedback">El nombre debe tener al menos 3 caracteres.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="r-email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="r-email" placeholder="usuario@correo.com" required>
+                            <div class="invalid-feedback">Ingrese un correo válido.</div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label for="r-pais" class="form-label">País</label>
+                                <select class="form-select" id="r-pais" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="RD">Rep. Dominicana</option>
+                                    <option value="US">EE.UU.</option>
+                                    <option value="ES">España</option>
+                                </select>
+                                <div class="invalid-feedback">Seleccione un país.</div>
+                            </div>
+                            <div class="col-6">
+                                <label for="r-tel" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="r-tel" placeholder="809-000-0000" required>
+                                <div class="invalid-feedback">Formato: 809-000-0000</div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="r-pass" class="form-label">Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="r-pass" placeholder="Mínimo 8 caracteres" required minlength="8">
+                            <div class="invalid-feedback">Mínimo 8 caracteres requeridos.</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-grupo1 flex-grow-1">
+                                <i class="bi bi-person-check me-1"></i>Registrar Miembro
+                            </button>
+                            <button type="reset" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: EDITAR USUARIO ==================== -->
+    <div class="modal fade" id="modalEditar" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-grupo1 text-white">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Usuario</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-editar" novalidate>
+                        <input type="hidden" id="e-id">
+                        <div class="mb-3">
+                            <label for="e-nombre" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="e-nombre" required minlength="3">
+                            <div class="invalid-feedback">El nombre debe tener al menos 3 caracteres.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="e-email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="e-email" required>
+                            <div class="invalid-feedback">Ingrese un correo válido.</div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label for="e-pais" class="form-label">País</label>
+                                <select class="form-select" id="e-pais" required>
+                                    <option value="">Seleccione...</option>
+                                    <option value="RD">Rep. Dominicana</option>
+                                    <option value="US">EE.UU.</option>
+                                    <option value="ES">España</option>
+                                </select>
+                                <div class="invalid-feedback">Seleccione un país.</div>
+                            </div>
+                            <div class="col-6">
+                                <label for="e-tel" class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" id="e-tel" required>
+                                <div class="invalid-feedback">Formato: 809-000-0000</div>
+                            </div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-naranja text-white">
+                                <i class="bi bi-save me-1"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: CONFIRMAR ELIMINAR ==================== -->
+    <div class="modal fade" id="modalEliminar" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2"></i>Eliminar Usuario</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-1">¿Eliminar a <strong id="eliminar-nombre"></strong>?</p>
+                    <small class="text-muted">Esta acción no se puede deshacer.</small>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger btn-sm" id="btn-confirmar-eliminar">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== TOAST DE NOTIFICACIONES ==================== -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index:9999">
+        <div id="toast-notificacion" class="toast align-items-center border-0" role="alert" aria-live="assertive">
+            <div class="d-flex">
+                <div class="toast-body fw-semibold" id="toast-mensaje"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle (incluye Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Lógica de la aplicación -->
     <script src="js/validaciones.js"></script>
 </body>
 </html>

@@ -132,3 +132,44 @@ El servidor queda disponible en `http://localhost:3000` y el frontend se conecta
 - Navegadores modernos con soporte de Fetch API
 - Node.js 18 o superior
 - MariaDB 10.6 o superior / MySQL 8 o superior
+
+---
+
+## Etapa 4: Cierre del Proyecto
+
+Se profesionalizó la aplicación integrando un framework CSS, completando el ciclo CRUD y reforzando la seguridad de las sesiones.
+
+### Cambios principales
+
+- **Bootstrap 5.3** sustituye los estilos CSS manuales. Se conservan los colores del Grupo 1 (#0b1838 / #F68121) como variables CSS que complementan el framework.
+- **Bootstrap Icons** para iconografía consistente en toda la interfaz.
+- **CRUD completo:** se agregaron las operaciones Update y Delete que faltaban tras la Etapa 3.
+- **Contraseñas encriptadas** con bcryptjs — los registros no se almacenan en texto plano.
+- **Autenticación completa:** Login y Logout con sesiones del servidor. Las rutas de edición y eliminación requieren sesión activa.
+- **Variables de entorno:** las credenciales de base de datos se mueven a un archivo `.env` que no se sube al repositorio.
+
+### Endpoints de la API (actualizado)
+
+| Método | Ruta                 | Operación SQL                     | Requiere sesión |
+|--------|----------------------|-----------------------------------|-----------------|
+| POST   | /api/registrar       | INSERT INTO usuarios              | No              |
+| POST   | /api/login           | SELECT + bcrypt.compare           | No              |
+| GET    | /api/sesion          | —                                 | No              |
+| POST   | /api/logout          | —                                 | Sí              |
+| GET    | /api/usuarios        | SELECT todos                      | No              |
+| PUT    | /api/usuarios/:id    | UPDATE usuarios SET ...           | Sí              |
+| DELETE | /api/usuarios/:id    | DELETE FROM usuarios WHERE id = ? | Sí              |
+
+### Configuración de variables de entorno
+
+Copiar el archivo de ejemplo y ajustar los valores antes de iniciar:
+
+```bash
+cp backend/.env.example backend/.env
+```
+
+Editar `backend/.env` con las credenciales reales de la base de datos.
+
+### Framework CSS utilizado
+
+**Bootstrap 5.3.3** — cargado desde CDN (jsdelivr.net). No requiere instalación local.
