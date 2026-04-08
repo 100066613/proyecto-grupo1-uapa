@@ -1,5 +1,6 @@
 const express = require('express');
 const router  = express.Router();
+const bcrypt  = require('bcryptjs');
 const db      = require('../db');
 
 // POST /api/registrar
@@ -11,8 +12,9 @@ router.post('/registrar', async (req, res) => {
     }
 
     try {
-        const sql = 'INSERT INTO usuarios (nombre, email, pais, telefono, password) VALUES (?, ?, ?, ?, ?)';
-        await db.execute(sql, [nombre.trim(), email.trim().toLowerCase(), pais, telefono.trim(), password]);
+        const hash = bcrypt.hashSync(password, 10);
+        const sql  = 'INSERT INTO usuarios (nombre, email, pais, telefono, password) VALUES (?, ?, ?, ?, ?)';
+        await db.execute(sql, [nombre.trim(), email.trim().toLowerCase(), pais, telefono.trim(), hash]);
         res.json({ ok: true, mensaje: 'Usuario registrado correctamente' });
     } catch (err) {
         if (err.code === 'ER_DUP_ENTRY') {
@@ -31,15 +33,16 @@ router.post('/login', async (req, res) => {
     }
 
     try {
-        const sql = 'SELECT id, nombre, email, pais, telefono, fecha_registro FROM usuarios WHERE email = ? AND password = ?';
-        const [filas] = await db.execute(sql, [email.trim().toLowerCase(), password]);
+        const sql = 'SELECT id, nombre, email, pais, telefono, password, fecha_registro FROM usuarios WHERE email = ?';
+        const [filas] = await db.execute(sql, [email.trim().toLowerCase()]);
 
-        if (filas.length === 0) {
+        if (filas.length === 0 || !bcrypt.compareSync(password, filas[0].password)) {
             return res.status(401).json({ ok: false, mensaje: 'Credenciales incorrectas' });
         }
 
-        req.session.usuario = filas[0];
-        res.json({ ok: true, usuario: filas[0] });
+        const { password: _, ...usuarioSinPass } = filas[0];
+        req.session.usuario = usuarioSinPass;
+        res.json({ ok: true, usuario: usuarioSinPass });
     } catch (err) {
         res.status(500).json({ ok: false, mensaje: 'Error interno del servidor' });
     }
@@ -68,6 +71,58 @@ router.get('/usuarios', async (req, res) => {
         res.json({ ok: true, usuarios: filas });
     } catch (err) {
         res.status(500).json({ ok: false, mensaje: 'Error al consultar usuarios' });
+    }
+});
+
+// PUT /api/usuarios/:id  (UPDATE)
+router.put('/usuarios/:id', async (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ ok: false, mensaje: 'Debe iniciar sesion para realizar esta accion' });
+    }
+
+    const { id } = req.params;
+    const { nombre, email, pais, telefono } = req.body;
+
+    if (!nombre || !email || !pais || !telefono) {
+        return res.status(400).json({ ok: false, mensaje: 'Todos los campos son obligatorios' });
+    }
+
+    try {
+        const sql = 'UPDATE usuarios SET nombre = ?, email = ?, pais = ?, telefono = ? WHERE id = ?';
+        const [resultado] = await db.execute(sql, [nombre.trim(), email.trim().toLowerCase(), pais, telefono.trim(), id]);
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado' });
+        }
+
+        res.json({ ok: true, mensaje: 'Usuario actualizado correctamente' });
+    } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ ok: false, mensaje: 'El correo ya esta en uso por otro usuario' });
+        }
+        res.status(500).json({ ok: false, mensaje: 'Error interno del servidor' });
+    }
+});
+
+// DELETE /api/usuarios/:id  (DELETE)
+router.delete('/usuarios/:id', async (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ ok: false, mensaje: 'Debe iniciar sesion para realizar esta accion' });
+    }
+
+    const { id } = req.params;
+
+    try {
+        const sql = 'DELETE FROM usuarios WHERE id = ?';
+        const [resultado] = await db.execute(sql, [id]);
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado' });
+        }
+
+        res.json({ ok: true, mensaje: 'Usuario eliminado correctamente' });
+    } catch (err) {
+        res.status(500).json({ ok: false, mensaje: 'Error interno del servidor' });
     }
 });
 
