@@ -71,4 +71,56 @@ router.get('/usuarios', async (req, res) => {
     }
 });
 
+// PUT /api/usuarios/:id  (UPDATE)
+router.put('/usuarios/:id', async (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ ok: false, mensaje: 'Debe iniciar sesion para realizar esta accion' });
+    }
+
+    const { id } = req.params;
+    const { nombre, email, pais, telefono } = req.body;
+
+    if (!nombre || !email || !pais || !telefono) {
+        return res.status(400).json({ ok: false, mensaje: 'Todos los campos son obligatorios' });
+    }
+
+    try {
+        const sql = 'UPDATE usuarios SET nombre = ?, email = ?, pais = ?, telefono = ? WHERE id = ?';
+        const [resultado] = await db.execute(sql, [nombre.trim(), email.trim().toLowerCase(), pais, telefono.trim(), id]);
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado' });
+        }
+
+        res.json({ ok: true, mensaje: 'Usuario actualizado correctamente' });
+    } catch (err) {
+        if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ ok: false, mensaje: 'El correo ya esta en uso por otro usuario' });
+        }
+        res.status(500).json({ ok: false, mensaje: 'Error interno del servidor' });
+    }
+});
+
+// DELETE /api/usuarios/:id  (DELETE)
+router.delete('/usuarios/:id', async (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ ok: false, mensaje: 'Debe iniciar sesion para realizar esta accion' });
+    }
+
+    const { id } = req.params;
+
+    try {
+        const sql = 'DELETE FROM usuarios WHERE id = ?';
+        const [resultado] = await db.execute(sql, [id]);
+
+        if (resultado.affectedRows === 0) {
+            return res.status(404).json({ ok: false, mensaje: 'Usuario no encontrado' });
+        }
+
+        res.json({ ok: true, mensaje: 'Usuario eliminado correctamente' });
+    } catch (err) {
+        res.status(500).json({ ok: false, mensaje: 'Error interno del servidor' });
+    }
+});
+
 module.exports = router;
