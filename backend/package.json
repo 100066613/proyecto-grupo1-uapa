@@ -1,7 +1,7 @@
 {
   "name": "isw306-grupo1-backend",
-  "version": "3.0.0",
-  "description": "Servidor backend para ISW306 Grupo 1 - Etapa 3",
+  "version": "4.0.0",
+  "description": "Servidor backend para ISW306 Grupo 1 - Etapa 4",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
