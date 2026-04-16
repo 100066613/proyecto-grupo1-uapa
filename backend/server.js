@@ -15,6 +15,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+app.use(express.static(path.join(__dirname, '..')));
+
 app.use(session({
     secret:            process.env.SESSION_SECRET || 'isw306-grupo1-clave-sesion',
     resave:            false,
@@ -23,8 +25,6 @@ app.use(session({
 }));
 
 app.use('/api', usuariosRouter);
-
-app.use(express.static(path.join(__dirname, '..')));
 
 app.listen(PORT, () => {
     console.log('Servidor ISW306 Grupo 1 activo en http://localhost:' + PORT);
