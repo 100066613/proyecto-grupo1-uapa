@@ -54,7 +54,7 @@ const mostrarToast = (mensaje, tipo = 'exito') => {
 
 const validarEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-const validarTelefono = (tel) => /^[0-9]{3}-[0-9]{4}-[0-9]{4}$|^[0-9]{10}$/.test(tel);
+const validarTelefono = (tel) => /^\d{3}-\d{3}-\d{4}$/.test(tel);
 
 /**
  * Aplica las clases de Bootstrap de validación a un input

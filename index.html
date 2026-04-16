@@ -63,69 +63,127 @@
     <!-- ==================== MAIN / DASHBOARD ==================== -->
     <main class="container-fluid py-4 px-4">
 
-        <!-- Cabecera del dashboard -->
-        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
-            <div>
-                <h2 class="fw-bold mb-0">Desarrollo de Aplicaciones WEB <small class="text-muted fs-6">(ISW306)</small></h2>
-                <p class="text-muted mb-0">Bienvenido al sistema de gestión académica del <strong>Grupo 1</strong>.</p>
-            </div>
-            <span class="badge bg-naranja text-white fs-6 mt-2 mt-md-0">FGC-208 / ISW306</span>
-        </div>
+        <div class="row g-4">
 
-        <!-- Tarjetas de estadísticas -->
-        <div class="row g-3 mb-4">
-            <div class="col-sm-4">
-                <div class="card border-0 shadow-sm text-center h-100">
-                    <div class="card-body py-4">
-                        <i class="bi bi-people-fill fs-1 text-naranja"></i>
-                        <h5 class="card-title mt-2 mb-0">Integrantes</h5>
-                        <p class="display-6 fw-bold mb-0">7</p>
-                        <small class="text-muted">Equipo Completo</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card border-0 shadow-sm text-center h-100">
-                    <div class="card-body py-4">
-                        <i class="bi bi-flag-fill fs-1 text-naranja"></i>
-                        <h5 class="card-title mt-2 mb-0">Etapa Actual</h5>
-                        <p class="display-6 fw-bold mb-0">04</p>
-                        <small class="text-success fw-semibold">Cierre del Proyecto</small>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="card border-0 shadow-sm text-center h-100">
-                    <div class="card-body py-4">
-                        <i class="bi bi-stack fs-1 text-naranja"></i>
-                        <h5 class="card-title mt-2 mb-0">Tecnologías</h5>
-                        <p class="fw-bold mb-0 mt-2">Node.js + MySQL</p>
-                        <small class="text-muted">Express · Bootstrap 5</small>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <!-- Contenido principal -->
+            <div class="col-lg-9">
 
-        <!-- Alerta de sesión requerida -->
-        <div id="alerta-sesion" class="alert alert-warning d-flex align-items-center gap-2 d-none mb-3" role="alert">
-            <i class="bi bi-lock-fill fs-5"></i>
-            <div>Inicia sesión para poder <strong>editar</strong> o <strong>eliminar</strong> usuarios.</div>
-        </div>
+                <!-- Cabecera del dashboard -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+                    <div>
+                        <h2 class="fw-bold mb-0">Desarrollo de Aplicaciones WEB <small class="text-muted fs-6">(ISW306)</small></h2>
+                        <p class="text-muted mb-0">Bienvenido al sistema de gestión académica del <strong>Grupo 1</strong>.</p>
+                    </div>
+                    <span class="badge bg-naranja text-white fs-6 mt-2 mt-md-0">FGC-208 / ISW306</span>
+                </div>
 
-        <!-- Tabla de usuarios registrados -->
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-grupo1 text-white d-flex align-items-center justify-content-between">
-                <span><i class="bi bi-table me-2"></i>Usuarios Registrados</span>
-                <span class="badge bg-light text-dark" id="contador-usuarios">0</span>
-            </div>
-            <div class="card-body p-0">
-                <div id="tabla-usuarios" class="p-3 text-muted">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="spinner-border spinner-border-sm text-naranja" role="status"></div>
-                        Cargando datos del servidor...
+                <!-- Tarjetas de estadísticas -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-4">
+                        <div class="card border-0 shadow-sm text-center h-100">
+                            <div class="card-body py-4">
+                                <i class="bi bi-people-fill fs-1 text-naranja"></i>
+                                <h5 class="card-title mt-2 mb-0">Integrantes</h5>
+                                <p class="display-6 fw-bold mb-0">7</p>
+                                <small class="text-muted">Equipo Completo</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card border-0 shadow-sm text-center h-100">
+                            <div class="card-body py-4">
+                                <i class="bi bi-flag-fill fs-1 text-naranja"></i>
+                                <h5 class="card-title mt-2 mb-0">Etapa Actual</h5>
+                                <p class="display-6 fw-bold mb-0">04</p>
+                                <small class="text-success fw-semibold">Cierre del Proyecto</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="card border-0 shadow-sm text-center h-100">
+                            <div class="card-body py-4">
+                                <i class="bi bi-stack fs-1 text-naranja"></i>
+                                <h5 class="card-title mt-2 mb-0">Tecnologías</h5>
+                                <p class="fw-bold mb-0 mt-2">Node.js + MySQL</p>
+                                <small class="text-muted">Express · Bootstrap 5</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Alerta de sesión requerida -->
+                <div id="alerta-sesion" class="alert alert-warning d-flex align-items-center gap-2 d-none mb-3" role="alert">
+                    <i class="bi bi-lock-fill fs-5"></i>
+                    <div>Inicia sesión para poder <strong>editar</strong> o <strong>eliminar</strong> usuarios.</div>
+                </div>
+
+                <!-- Tabla de usuarios registrados -->
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-grupo1 text-white d-flex align-items-center justify-content-between">
+                        <span><i class="bi bi-table me-2"></i>Usuarios Registrados</span>
+                        <span class="badge bg-light text-dark" id="contador-usuarios">0</span>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="tabla-usuarios" class="p-3 text-muted">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="spinner-border spinner-border-sm text-naranja" role="status"></div>
+                                Cargando datos del servidor...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+            <!-- Barra lateral con info del proyecto -->
+            <aside class="col-lg-3">
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-header bg-grupo1 text-white">
+                        <i class="bi bi-info-circle me-2"></i>Acerca del Proyecto
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-2">Sistema de gestión académica desarrollado de forma incremental durante el trimestre.</p>
+                        <ul class="list-unstyled small mb-0">
+                            <li class="mb-1"><i class="bi bi-check-circle text-naranja me-1"></i>Etapa 1: Maquetación</li>
+                            <li class="mb-1"><i class="bi bi-check-circle text-naranja me-1"></i>Etapa 2: Interactividad</li>
+                            <li class="mb-1"><i class="bi bi-check-circle text-naranja me-1"></i>Etapa 3: Backend</li>
+                            <li class="mb-1"><i class="bi bi-check-circle text-naranja me-1"></i>Etapa 4: Cierre</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card border-0 shadow-sm mb-3">
+                    <div class="card-header bg-grupo1 text-white">
+                        <i class="bi bi-layers me-2"></i>Stack Tecnológico
+                    </div>
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-filetype-html text-naranja"></i> HTML5 Semántico
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-filetype-css text-naranja"></i> CSS3 + Bootstrap 5
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-filetype-js text-naranja"></i> JavaScript ES6+
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-server text-naranja"></i> Node.js + Express
+                        </li>
+                        <li class="list-group-item d-flex align-items-center gap-2">
+                            <i class="bi bi-database text-naranja"></i> MySQL
+                        </li>
+                    </ul>
+                </div>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-grupo1 text-white">
+                        <i class="bi bi-shield-lock me-2"></i>Acceso al Sistema
+                    </div>
+                    <div class="card-body small text-muted">
+                        <p class="mb-1">Las operaciones de <strong>edición</strong> y <strong>eliminación</strong> requieren autenticación.</p>
+                        <p class="mb-0">El registro está disponible para todos los visitantes.</p>
+                    </div>
+                </div>
+            </aside>
+
         </div>
 
     </main>

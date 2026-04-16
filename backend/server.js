@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
-    secret:            'isw306-grupo1-clave-sesion',
+    secret:            process.env.SESSION_SECRET || 'isw306-grupo1-clave-sesion',
     resave:            false,
     saveUninitialized: false,
     cookie: { maxAge: 3600000 }
