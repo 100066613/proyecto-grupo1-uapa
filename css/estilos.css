@@ -15,8 +15,8 @@
 .btn-grupo1:hover { background-color: #162347; color: #fff; border-color: #162347; }
 .bg-naranja       { background-color: var(--naranja-grupo1) !important; }
 .btn-naranja      { background-color: var(--naranja-grupo1); color: #fff; border-color: var(--naranja-grupo1); }
-.btn-naranja:hover{ background-color: #d96f10; color: #fff; border-color: #d96f10; }
-.text-naranja     { color: var(--naranja-grupo1) !important; }
+.btn-naranja:hover{ background-color: #b35c0a; color: #fff; border-color: #b35c0a; }
+.text-naranja     { color: #b35c0a !important; }
 .text-muted-light { color: rgba(255,255,255,0.5) !important; }
 
 /* Layout principal */

@@ -40,10 +40,12 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ ok: false, mensaje: 'Credenciales incorrectas' });
         }
 
-        const { password: _, ...usuarioSinPass } = filas[0];
+        const usuarioSinPass = { ...filas[0] };
+        delete usuarioSinPass.password;
         req.session.usuario = usuarioSinPass;
         res.json({ ok: true, usuario: usuarioSinPass });
     } catch (err) {
+        console.error('Error en login:', err);
         res.status(500).json({ ok: false, mensaje: 'Error interno del servidor' });
     }
 });
@@ -70,6 +72,7 @@ router.get('/usuarios', async (req, res) => {
         const [filas] = await db.execute(sql);
         res.json({ ok: true, usuarios: filas });
     } catch (err) {
+        console.error('Error al consultar usuarios:', err);
         res.status(500).json({ ok: false, mensaje: 'Error al consultar usuarios' });
     }
 });
@@ -122,6 +125,7 @@ router.delete('/usuarios/:id', async (req, res) => {
 
         res.json({ ok: true, mensaje: 'Usuario eliminado correctamente' });
     } catch (err) {
+        console.error('Error al eliminar usuario:', err);
         res.status(500).json({ ok: false, mensaje: 'Error interno del servidor' });
     }
 });

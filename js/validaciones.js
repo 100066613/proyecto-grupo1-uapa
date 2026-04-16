@@ -132,7 +132,7 @@ const cargarTablaUsuarios = async () => {
     }
 };
 
-const escapar = (str) => String(str).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+const escapar = (str) => String(str).replaceAll("'", String.raw`\'`).replaceAll('"', '&quot;');
 
 // --- Editar usuario ---
 
@@ -161,10 +161,10 @@ const initFormEditar = () => {
 
         let valido = true;
 
-        if (!nombre.value.trim() || nombre.value.trim().length < 3) { marcarInvalido(nombre); valido = false; } else marcarValido(nombre);
-        if (!validarEmail(email.value.trim()))                        { marcarInvalido(email);  valido = false; } else marcarValido(email);
-        if (!pais.value)                                              { marcarInvalido(pais);   valido = false; } else marcarValido(pais);
-        if (!validarTelefono(telefono.value.trim()))                  { marcarInvalido(telefono); valido = false; } else marcarValido(telefono);
+        if (nombre.value.trim().length >= 3) { marcarValido(nombre); } else { marcarInvalido(nombre); valido = false; }
+        if (validarEmail(email.value.trim())) { marcarValido(email); } else { marcarInvalido(email); valido = false; }
+        if (pais.value) { marcarValido(pais); } else { marcarInvalido(pais); valido = false; }
+        if (validarTelefono(telefono.value.trim())) { marcarValido(telefono); } else { marcarInvalido(telefono); valido = false; }
 
         if (!valido) return;
 
@@ -243,8 +243,8 @@ const initFormLogin = () => {
         const pass  = document.getElementById('l-pass');
         let valido  = true;
 
-        if (!validarEmail(email.value.trim())) { marcarInvalido(email); valido = false; } else marcarValido(email);
-        if (!pass.value)                        { marcarInvalido(pass);  valido = false; } else marcarValido(pass);
+        if (validarEmail(email.value.trim())) { marcarValido(email); } else { marcarInvalido(email); valido = false; }
+        if (pass.value) { marcarValido(pass); } else { marcarInvalido(pass); valido = false; }
 
         if (!valido) return;
 
@@ -304,11 +304,11 @@ const initFormRegistro = () => {
 
         let valido = true;
 
-        if (!nombre.value.trim() || nombre.value.trim().length < 3) { marcarInvalido(nombre);   valido = false; } else marcarValido(nombre);
-        if (!validarEmail(email.value.trim()))                        { marcarInvalido(email);    valido = false; } else marcarValido(email);
-        if (!pais.value)                                              { marcarInvalido(pais);     valido = false; } else marcarValido(pais);
-        if (!validarTelefono(telefono.value.trim()))                  { marcarInvalido(telefono); valido = false; } else marcarValido(telefono);
-        if (!pass.value || pass.value.length < 8)                    { marcarInvalido(pass);     valido = false; } else marcarValido(pass);
+        if (nombre.value.trim().length >= 3) { marcarValido(nombre); } else { marcarInvalido(nombre); valido = false; }
+        if (validarEmail(email.value.trim())) { marcarValido(email); } else { marcarInvalido(email); valido = false; }
+        if (pais.value) { marcarValido(pais); } else { marcarInvalido(pais); valido = false; }
+        if (validarTelefono(telefono.value.trim())) { marcarValido(telefono); } else { marcarInvalido(telefono); valido = false; }
+        if (pass.value.length >= 8) { marcarValido(pass); } else { marcarInvalido(pass); valido = false; }
 
         if (!valido) return;
 
